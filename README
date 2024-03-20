@@ -1,0 +1,70 @@
+% A PyTorch implementation of FFDNet image Denoising.
+====================================================
+## Dependencies
+* [PyTorch v0.3.1](http://pytorch.org/)
+* [scikit-image](http://scikit-image.org/)
+* [torchvision](https://github.com/pytorch/vision)
+* [OpenCV](https://pypi.org/project/opencv-python/)
+* [HDF5](http://www.h5py.org/)
+* [tensorboardX](https://github.com/lanpa/tensorboard-pytorch)
+
+
+## Dataset Information
+======================
+For Color image;
+Training Dataset = CBSD500
+Testing Dataset = CBSD68, Kodak24,RNI15 (realistic testing dataset)
+
+For Grayscale image;
+Training Dataset = train
+Testing Dataset = Set12, BSD68,RNI6 (realistic testing dataset)
+
+## Usage
+=========
+(1) Create prepare patches
+=========================
+For Color image;
+python prepare_patches.py --aug_times 1;
+For Grayscale image;
+python prepare_patches.py --aug_times 1 --gray;
+
+The default size of the stride is set to 20, while augmentation time can be chosen (with the default being 1).
+Users have the flexibility to specify patch size, FFDNet recommends grayscale for 70 and color for 50.
+
+A model can be trained after having built the training and validation databases.
+(i.e. *train_rgb.h5* and *val_rgb.h5* for color denoising, and *train_gray.h5*
+and *val_gray.h5* for grayscale denoising).
+
+(2) Model Training
+==================
+For Color image;
+python OrgTrain.py --epochs 80 --noiseIntL 0 75 --val_noiseL 25;
+For Grayscale image;
+python OrgTrain.py --epochs 80 --noiseIntL 0 75 --val_noiseL 25 --gray;
+
+* By default, models are trained for values of noise in [0, 75] and
+* noise added at validation is set to 25 according to the recommendation of FFDNet.
+
+
+(3) Model Testing
+=================
+For Grayscale image,
+python OrgTest.py --noise_sigma 25 --no_of_channel 1 --add_noise true;
+For Color image,
+python OrgTest.py --noise_sigma 25 --no_of_channel 3 --add_noise true;
+
+* *add_noise* can be set to *false* if the input image is already noisy. For example, RNI6 and RNI15
+are realistic noisy image. For realistic dataset RNI6 and RNI15 add_noise= false;
+For example,
+python OrgTest.py --noise_sigma 25 --no_of_channel 3 --add_noise false;
+
+* By default, models are trained for values of noise in [0, 75] in --noiseIntL parameter and
+* noise added at validation is set to 25 in -val_noiseL parameter
+** A previous training can be resumed passing the [--resume_training] flag at the end of the model training comment.
+
+** Modify the training and testing of the file names for DLPF, BLPF, GLPF, and SLPF to different requirements.
+For power spectrum sparsity based Low Pass Filter, SLPFTrain.py and SLPFTest.py
+For Direct ( Ideal ) Low pass filter , DLPFTrain.py and DLPFTest.py
+For Gaussian Low pass filter , GLPFTrain.py and GLPFTest.py
+For Butterworth Low pass filter , BLPFTrain.py and BLPFTest.py
+
