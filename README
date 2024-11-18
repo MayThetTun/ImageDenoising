@@ -1,3 +1,7 @@
+Paper for Journal of Signal Processing (2024 January)
+Joint Training of Noisy Image Patch and Impulse Response of Low-Pass Filter in CNN for Image Denoising
+May Thet Tun, Yosuke Sugiura, Tetsuya Shimamura
+
 % A PyTorch implementation of FFDNet image Denoising.
 ====================================================
 ## Dependencies
